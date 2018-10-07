@@ -1,0 +1,67 @@
+#include<stdio.h>
+#include<math.h>
+double determinant(double m11,double m12,double m13,double m21,double m22,double m23,double m31,double m32,double m33);
+int main()
+{
+	double x,y,z,a,b;
+	double x1,y1,z1,a1,b1;
+	double x2,y2,z2,a2,b2;
+	double m,n,p; 
+	double d1,d2,d,_d,_d1,_d2;
+	double D,Dx,Dy,Dz;
+	double _x,_y;
+	double _x1,_y1,_z1; 
+	double _x2,_y2; 
+	
+	scanf("%lf%lf%lf;%lf%lf%lf;%lf%lf%lf",&a,&b,&_d,&a1,&b1,&_d1,&a2,&b2,&_d2);
+	
+	/*将经纬度转换为3D球坐标*/ 
+	x=cos(3.141593*a/180.000000)*cos(3.141593*b/180.000000);
+	y=sin(3.141593*a/180.000000)*cos(3.141593*b/180.000000);
+	z=sin(3.141593*b/180.000000);
+	
+	x1=cos(3.141593*a1/180.000000)*cos(3.141593*b1/180.000000);
+	y1=sin(3.141593*a1/180.000000)*cos(3.141593*b1/180.000000);
+	z1=sin(3.141593*b1/180.000000);
+	
+	x2=cos(3.141593*a2/180.000000)*cos(3.141593*b2/180.000000);
+	y2=sin(3.141593*a2/180.000000)*cos(3.141593*b2/180.000000);
+	z2=sin(3.141593*b2/180.000000);
+
+	/*计算目标的三维坐标*/
+	d  = _d/6371;
+	d1 = _d1/6371;
+	d2 = _d2/6371;
+	
+	D = determinant(x,y,z,x1,y1,z1,x2,y2,z2);
+	Dx = determinant((1-0.5*d*d),y,z,(1-0.5*d1*d1),y1,z1,(1-0.5*d2*d2),y2,z2);
+    Dy = determinant(x,(1-0.5*d*d),z,x1,(1-0.5*d1*d1),z1,x2,(1-0.5*d2*d2),z2);
+    Dz = determinant(x,y,(1-0.5*d*d),x1,y1,(1-0.5*d1*d1),x2,y2,(1-0.5*d2*d2));
+
+	
+	/*计算目标的经纬度坐标（to be completed）*/
+	_z1 = sqrt(Dx*Dx + Dy*Dy);
+	_x = atan(Dy/Dx);
+	_y = atan(Dz/_z1);
+	
+	if (_x < 0)
+	 _x2 = 180.000000+ 180.000000 * _x / 3.141593;
+	else _x2 = 180.000000 * _x / 3.141593; 
+	if (_y < 0)
+	  _y2 = 180.000000+ 180.000000 * _y / 3.141593;
+	else  _y2 = 180.000000 * _y / 3.141593;
+
+	
+	/*输出经纬度坐标*/
+	printf("经度、维度为  %lf  %lf",_x2,_y2); 
+
+	
+	return 0 ;
+ } 
+ 
+ double determinant(double m11,double m12,double m13,double m21,double m22,double m23,double m31,double m32,double m33)
+ {
+ 	double result;
+ 	result = m11*m22*m33 + m12*m23*m31 + m13*m32*m21 - m12*m21*m33 - m11*m23*m32 - m13*m22*m31;
+ 	return result;
+ }
